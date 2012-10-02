@@ -1,0 +1,7 @@
+package com.mreapps.kvissnet.backend.api;
+
+option java_outer_classname = "QuizProtoBufApi";
+
+message PBCategory {
+  required string name = 1;
+}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>kviss.net - Parent</name>
+    <artifactId>kviss.net</artifactId>
+    <groupId>com.mreapps.kvissnet</groupId>
+    <version>0.1</version>
+    <packaging>pom</packaging>
+
+    <modules>
+	<module>backend-api</module>
+        <module>backend</module>
+    </modules>
+
+    <properties>
+        <kviss.net.version>0.1</kviss.net.version>
+
+        <junit.version>4.10</junit.version>
+
+        <maven-compiler-plugin>2.3.2</maven-compiler-plugin>
+        <maven-source-plugin>2.1.2</maven-source-plugin>
+        <maven-war-plugin>2.2</maven-war-plugin>
+        <maven-surefire-plugin>2.11</maven-surefire-plugin>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+
+        <source-version>1.6</source-version>
+        <source-encoding>${project.build.sourceEncoding}</source-encoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <name>Maven Central</name>
+            <id>central</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin}</version>
+                <configuration>
+                    <source>${source-version}</source>
+                    <target>${source-version}</target>
+                    <encoding>${source-encoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
