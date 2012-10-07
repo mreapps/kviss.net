@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
 
     <modules>
-	<module>backend-api</module>
-        <module>backend</module>
+	    <module>backend-api</module>
+        <module>gae-backend</module>
     </modules>
 
     <properties>
