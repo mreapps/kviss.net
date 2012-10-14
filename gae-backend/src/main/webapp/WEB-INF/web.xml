@@ -29,6 +29,16 @@
         <url-pattern>/kvissnet/kvissNetUser</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>categoryServiceServlet</servlet-name>
+        <servlet-class>com.mreapps.kvissnet.gaebackend.server.service.impl.CategoryServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>categoryServiceServlet</servlet-name>
+        <url-pattern>/kvissnet/categories</url-pattern>
+    </servlet-mapping>
+
     <!-- Default page to serve -->
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
