@@ -1,7 +1,8 @@
 package com.mreapps.kvissnet.gaebackend.server.dao.impl;
 
-import com.mreapps.kvissnet.gaebackend.model.Category;
+import com.google.appengine.api.datastore.Key;
 import com.mreapps.kvissnet.gaebackend.server.dao.CategoryDao;
+import com.mreapps.kvissnet.gaebackend.server.entity.JdoCategory;
 import com.mreapps.kvissnet.gaebackend.server.factory.PMF;
 
 import javax.jdo.FetchGroup;
@@ -13,21 +14,21 @@ import java.util.List;
 public class CategoryDaoImpl implements CategoryDao
 {
     @Override
-    public Category store(Category category)
+    public JdoCategory store(JdoCategory category)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         return pm.makePersistent(category);
     }
 
     @Override
-    public List<Category> findAll()
+    public List<JdoCategory> findAll()
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         pm.getFetchPlan().setGroup(FetchGroup.ALL);
-        Query q = pm.newQuery(Category.class);
-        List<Category> categories = new ArrayList<Category>();
+        Query q = pm.newQuery(JdoCategory.class);
+        List<JdoCategory> categories = new ArrayList<JdoCategory>();
         //noinspection unchecked
-        for (Category category : (List<Category>) q.execute())
+        for (JdoCategory category : (List<JdoCategory>) q.execute())
         {
             categories.add(category);
         }
@@ -35,30 +36,32 @@ public class CategoryDaoImpl implements CategoryDao
     }
 
     @Override
-    public void delete(Long id)
+    public void delete(Key key)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        pm.deletePersistent(pm.getObjectById(Category.class, id));
+        pm.deletePersistent(pm.getObjectById(JdoCategory.class, key));
     }
 
     @Override
-    public Category get(Long id)
+    public JdoCategory get(Key key)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         pm.getFetchPlan().setGroup(FetchGroup.ALL);
-        return pm.getObjectById(Category.class, id);
+        return pm.getObjectById(JdoCategory.class, key);
     }
 
     @Override
-    public List<Category> delete(List<Long> ids)
+    public List<JdoCategory> delete(List<Key> keys)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        List<Category> categories = new ArrayList<Category>();
-        for (Object o : pm.getObjectsById(ids))
+        if (keys != null && !keys.isEmpty())
         {
-            pm.deletePersistent(o);
-            categories.add((Category) o);
+            for (Key key : keys)
+            {
+                JdoCategory jdoCategory = pm.getObjectById(JdoCategory.class, key);
+                pm.deletePersistent(jdoCategory);
+            }
         }
-        return categories;
+        return findAll();
     }
 }

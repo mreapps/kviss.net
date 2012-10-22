@@ -1,4 +1,6 @@
-package com.mreapps.kvissnet.gaebackend.model;
+package com.mreapps.kvissnet.gaebackend.server.entity;
+
+import com.google.appengine.api.datastore.Key;
 
 import javax.jdo.annotations.*;
 
@@ -11,11 +13,16 @@ public abstract class AbstractBaseEntity implements BaseEntity
     @SuppressWarnings("UnusedDeclaration")
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Long id;
+    private Key key;
 
     @Override
-    public Long getId()
+    public Key getKey()
     {
-        return id;
+        return key;
+    }
+
+    public void setKey(Key key)
+    {
+        this.key = key;
     }
 }

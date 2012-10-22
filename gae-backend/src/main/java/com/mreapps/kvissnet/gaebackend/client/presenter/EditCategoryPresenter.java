@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.mreapps.kvissnet.gaebackend.client.CategoryServiceAsync;
 import com.mreapps.kvissnet.gaebackend.client.event.CategoryUpdatedEvent;
 import com.mreapps.kvissnet.gaebackend.client.event.EditCategoryCancelledEvent;
+import com.mreapps.kvissnet.gaebackend.client.ui.SubCategoryCellTable;
 import com.mreapps.kvissnet.gaebackend.model.Category;
 import com.mreapps.kvissnet.gaebackend.model.enums.LanguageCode;
 
@@ -23,7 +24,11 @@ public class EditCategoryPresenter implements Presenter
 
         HasClickHandlers getCancelButton();
 
-        HasValue<String> getName();
+        HasValue<String> getNorwegianName();
+
+        HasValue<String> getEnglishName();
+
+        SubCategoryCellTable getSubCategoryCellTable();
 
         Widget asWidget();
     }
@@ -54,7 +59,9 @@ public class EditCategoryPresenter implements Presenter
             public void onSuccess(Category result)
             {
                 category = result;
-                EditCategoryPresenter.this.display.getName().setValue(category.getName(LanguageCode.NORWEGIAN));
+                EditCategoryPresenter.this.display.getNorwegianName().setValue(category.getName(LanguageCode.NORWEGIAN));
+                EditCategoryPresenter.this.display.getEnglishName().setValue(category.getName(LanguageCode.ENGLISH));
+//                EditCategoryPresenter.this.display.getSubCategoryCellTable().setData(category.getSubCategories());
             }
 
             public void onFailure(Throwable caught)
@@ -92,7 +99,8 @@ public class EditCategoryPresenter implements Presenter
 
     private void doSave()
     {
-        category.setName(LanguageCode.NORWEGIAN, display.getName().getValue());
+        category.setName(LanguageCode.NORWEGIAN, display.getNorwegianName().getValue());
+        category.setName(LanguageCode.ENGLISH, display.getEnglishName().getValue());
 
         rpcService.store(category, new AsyncCallback<Category>()
         {

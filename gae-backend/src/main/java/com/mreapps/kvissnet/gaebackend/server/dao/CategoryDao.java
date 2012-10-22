@@ -1,18 +1,19 @@
 package com.mreapps.kvissnet.gaebackend.server.dao;
 
-import com.mreapps.kvissnet.gaebackend.model.Category;
+import com.google.appengine.api.datastore.Key;
+import com.mreapps.kvissnet.gaebackend.server.entity.JdoCategory;
 
 import java.util.List;
 
 public interface CategoryDao
 {
-    Category store(Category category);
+    JdoCategory store(JdoCategory category);
 
-    List<Category> findAll();
+    List<JdoCategory> findAll();
 
-    void delete(Long id);
+    void delete(Key key);
 
-    Category get(Long id);
+    JdoCategory get(Key key);
 
-    List<Category> delete(List<Long> ids);
+    List<JdoCategory> delete(List<Key> keys);
 }

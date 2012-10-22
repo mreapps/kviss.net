@@ -174,7 +174,7 @@
                 <artifactId>maven-datanucleus-plugin</artifactId>
                 <version>${maven-datanucleus-plugin}</version>
                 <configuration>
-                    <mappingIncludes>**/model/*.class</mappingIncludes>
+                    <mappingIncludes>**/server/entity/*.class</mappingIncludes>
                     <verbose>true</verbose>
                     <enhancerName>ASM</enhancerName>
                     <api>JDO</api>

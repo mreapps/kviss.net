@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.mreapps.kvissnet.gaebackend.client.CategoryServiceAsync;
 import com.mreapps.kvissnet.gaebackend.client.event.AddCategoryEvent;
+import com.mreapps.kvissnet.gaebackend.client.event.EditCategoryEvent;
 import com.mreapps.kvissnet.gaebackend.model.Category;
 import com.mreapps.kvissnet.gaebackend.model.enums.LanguageCode;
 
@@ -24,15 +25,13 @@ public class CategoriesPresenter implements Presenter
     {
         HasClickHandlers getAddButton();
 
-        HasClickHandlers getDeleteButton();
+        HasClickHandlers getEditButton();
 
-//        HasClickHandlers getList();
+        HasClickHandlers getDeleteButton();
 
         void setData(List<Category> data);
 
-//        int getClickedRow(ClickEvent event);
-
-        List<Integer> getSelectedRows();
+        List<Category> getSelectedRows();
 
         Widget asWidget();
     }
@@ -66,19 +65,19 @@ public class CategoriesPresenter implements Presenter
             }
         });
 
-//        display.getList().addClickHandler(new ClickHandler()
-//        {
-//            public void onClick(ClickEvent event)
-//            {
-//                int selectedRow = display.getClickedRow(event);
-//
-//                if (selectedRow >= 0)
-//                {
-//                    Long id = categories.get(selectedRow).getId();
-//                    eventBus.fireEvent(new EditCategoryEvent(id));
-//                }
-//            }
-//        });
+        display.getEditButton().addClickHandler(new ClickHandler()
+        {
+            public void onClick(ClickEvent event)
+            {
+                List<Category> selectedRows = display.getSelectedRows();
+
+                if (selectedRows != null && !selectedRows.isEmpty())
+                {
+                    Long id = selectedRows.iterator().next().getId();
+                    eventBus.fireEvent(new EditCategoryEvent(id));
+                }
+            }
+        });
     }
 
     public void go(final HasWidgets container)
@@ -141,12 +140,12 @@ public class CategoriesPresenter implements Presenter
 
     private void deleteSelectedContacts()
     {
-        List<Integer> selectedRows = display.getSelectedRows();
+        List<Category> selectedCategories = display.getSelectedRows();
         ArrayList<Long> ids = new ArrayList<Long>();
 
-        for (Integer selectedRow : selectedRows)
+        for (Category category : selectedCategories)
         {
-            ids.add(categories.get(selectedRow).getId());
+            ids.add(category.getId());
         }
 
         rpcService.delete(ids, new AsyncCallback<List<Category>>()

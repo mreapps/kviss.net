@@ -1,4 +1,4 @@
-package com.mreapps.kvissnet.gaebackend.model;
+package com.mreapps.kvissnet.gaebackend.server.entity;
 
 import com.mreapps.kvissnet.gaebackend.model.enums.LanguageCode;
 
@@ -9,9 +9,9 @@ import java.io.Serializable;
 
 @PersistenceCapable
 @EmbeddedOnly
-public class Text implements Serializable
+public class JdoText implements Serializable
 {
-    private static final long serialVersionUID = 6237224185491950090L;
+    private static final long serialVersionUID = 451047986772200687L;
 
     @Persistent
     private String norwegianText;
