@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class CategoryCellTable
+public class CategoryCellTable implements Table<Category>
 {
     interface Binder extends UiBinder<Widget, CategoryCellTable>
     {
@@ -137,16 +137,19 @@ public class CategoryCellTable
         cellTable.addColumn(englishNameColumn, constants.englishName());
     }
 
+    @Override
     public Widget asWidget()
     {
         return widget;
     }
 
+    @Override
     public void setData(List<Category> data)
     {
         dataProvider.setList(data);
     }
 
+    @Override
     public List<Category> getSelectedData()
     {
         List<Category> selectedData = new ArrayList<Category>();

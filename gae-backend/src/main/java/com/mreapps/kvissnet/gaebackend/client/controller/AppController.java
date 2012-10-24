@@ -6,12 +6,10 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.mreapps.kvissnet.gaebackend.client.CategoryServiceAsync;
-import com.mreapps.kvissnet.gaebackend.client.event.*;
-import com.mreapps.kvissnet.gaebackend.client.presenter.CategoriesPresenter;
-import com.mreapps.kvissnet.gaebackend.client.presenter.EditCategoryPresenter;
 import com.mreapps.kvissnet.gaebackend.client.presenter.Presenter;
-import com.mreapps.kvissnet.gaebackend.client.view.CategoriesView;
-import com.mreapps.kvissnet.gaebackend.client.view.EditCategoriesView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppController implements Presenter, ValueChangeHandler<String>
 {
@@ -19,10 +17,17 @@ public class AppController implements Presenter, ValueChangeHandler<String>
     private final CategoryServiceAsync rpcService;
     private HasWidgets container;
 
+    private final List<Controller> controllers;
+
     public AppController(CategoryServiceAsync rpcService, HandlerManager eventBus)
     {
         this.eventBus = eventBus;
         this.rpcService = rpcService;
+
+        controllers = new ArrayList<Controller>();
+        controllers.add(new CategoryController(this));
+        controllers.add(new TagController(this));
+
         bind();
     }
 
@@ -30,63 +35,10 @@ public class AppController implements Presenter, ValueChangeHandler<String>
     {
         History.addValueChangeHandler(this);
 
-        eventBus.addHandler(AddCategoryEvent.TYPE, new AddCategoryEventHandler()
+        for (Controller controller : controllers)
         {
-            @Override
-            public void onAddCategory(AddCategoryEvent event)
-            {
-                doAddNewCategory();
-            }
-        });
-
-        eventBus.addHandler(EditCategoryEvent.TYPE, new EditCategoryEventHandler()
-        {
-            @Override
-            public void onEditCategory(EditCategoryEvent event)
-            {
-                doEditCategory(event.getId());
-            }
-        });
-
-        eventBus.addHandler(EditCategoryCancelledEvent.TYPE, new EditCategoryCancelledEventHandler()
-        {
-            @Override
-            public void onEditCategoryCancelled(EditCategoryCancelledEvent event)
-            {
-                doEditCategoryCancelled();
-            }
-        });
-
-        eventBus.addHandler(CategoryUpdatedEvent.TYPE, new CategoryUpdatedEventHandler()
-        {
-            @Override
-            public void onCategoryUpdated(CategoryUpdatedEvent event)
-            {
-                doCategoryUpdated();
-            }
-        });
-    }
-
-    private void doAddNewCategory()
-    {
-        History.newItem("add");
-    }
-
-    private void doEditCategory(Long id)
-    {
-        History.newItem("edit", false);
-        Presenter presenter = new EditCategoryPresenter(rpcService, eventBus, new EditCategoriesView(), id);
-        presenter.go(container);
-    }
-
-    private void doEditCategoryCancelled()
-    {
-        History.newItem("list");
-    }
-
-    private void doCategoryUpdated()
-    {
-        History.newItem("list");
+            controller.bind();
+        }
     }
 
     public void go(final HasWidgets container)
@@ -95,7 +47,7 @@ public class AppController implements Presenter, ValueChangeHandler<String>
 
         if ("".equals(History.getToken()))
         {
-            History.newItem("list");
+            History.newItem(CategoryController.LIST);
         } else
         {
             History.fireCurrentHistoryState();
@@ -110,15 +62,13 @@ public class AppController implements Presenter, ValueChangeHandler<String>
         {
             Presenter presenter = null;
 
-            if (token.equals("list"))
+            for (Controller controller : controllers)
             {
-                presenter = new CategoriesPresenter(rpcService, eventBus, new CategoriesView());
-            } else if (token.equals("add"))
-            {
-                presenter = new EditCategoryPresenter(rpcService, eventBus, new EditCategoriesView());
-            } else if (token.equals("edit"))
-            {
-                presenter = new EditCategoryPresenter(rpcService, eventBus, new EditCategoriesView());
+                presenter = controller.onValueChange(event);
+                if (presenter != null)
+                {
+                    break;
+                }
             }
 
             if (presenter != null)
@@ -126,5 +76,20 @@ public class AppController implements Presenter, ValueChangeHandler<String>
                 presenter.go(container);
             }
         }
+    }
+
+    protected HandlerManager getEventBus()
+    {
+        return eventBus;
+    }
+
+    protected CategoryServiceAsync getRpcService()
+    {
+        return rpcService;
+    }
+
+    protected HasWidgets getContainer()
+    {
+        return container;
     }
 }

@@ -1,8 +1,8 @@
 package com.mreapps.kvissnet.gaebackend.server.dao.impl;
 
 import com.google.appengine.api.datastore.Key;
-import com.mreapps.kvissnet.gaebackend.server.dao.CategoryDao;
-import com.mreapps.kvissnet.gaebackend.server.entity.JdoCategory;
+import com.mreapps.kvissnet.gaebackend.server.dao.TagDao;
+import com.mreapps.kvissnet.gaebackend.server.entity.JdoTag;
 import com.mreapps.kvissnet.gaebackend.server.factory.PMF;
 import org.springframework.stereotype.Component;
 
@@ -13,57 +13,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CategoryDaoImpl implements CategoryDao
+public class TagDaoImpl implements TagDao
 {
     @Override
-    public JdoCategory store(JdoCategory category)
+    public void store(JdoTag tag)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        return pm.makePersistent(category);
+        pm.makePersistent(tag);
     }
 
     @Override
-    public List<JdoCategory> findAll()
+    public List<JdoTag> findAll()
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         pm.getFetchPlan().setGroup(FetchGroup.ALL);
-        Query q = pm.newQuery(JdoCategory.class);
-        List<JdoCategory> categories = new ArrayList<JdoCategory>();
+        Query q = pm.newQuery(JdoTag.class);
+        List<JdoTag> tags = new ArrayList<JdoTag>();
         //noinspection unchecked
-        for (JdoCategory category : (List<JdoCategory>) q.execute())
+        for (JdoTag tag : (List<JdoTag>) q.execute())
         {
-            categories.add(category);
+            tags.add(tag);
         }
-        return categories;
+        return tags;
     }
 
     @Override
     public void delete(Key key)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        pm.deletePersistent(pm.getObjectById(JdoCategory.class, key));
+        pm.deletePersistent(pm.getObjectById(JdoTag.class, key));
     }
 
     @Override
-    public JdoCategory get(Key key)
+    public JdoTag get(Key key)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         pm.getFetchPlan().setGroup(FetchGroup.ALL);
-        return pm.getObjectById(JdoCategory.class, key);
+        return pm.getObjectById(JdoTag.class, key);
     }
 
     @Override
-    public List<JdoCategory> delete(List<Key> keys)
+    public void delete(List<Key> keys)
     {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         if (keys != null && !keys.isEmpty())
         {
             for (Key key : keys)
             {
-                JdoCategory jdoCategory = pm.getObjectById(JdoCategory.class, key);
-                pm.deletePersistent(jdoCategory);
+                JdoTag jdoTag = pm.getObjectById(JdoTag.class, key);
+                pm.deletePersistent(jdoTag);
             }
         }
-        return findAll();
     }
 }

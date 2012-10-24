@@ -10,8 +10,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.mreapps.kvissnet.gaebackend.client.CategoryServiceAsync;
-import com.mreapps.kvissnet.gaebackend.client.event.CategoryUpdatedEvent;
-import com.mreapps.kvissnet.gaebackend.client.event.EditCategoryCancelledEvent;
+import com.mreapps.kvissnet.gaebackend.client.event.CategoryEvent;
 import com.mreapps.kvissnet.gaebackend.client.ui.SubCategoryCellTable;
 import com.mreapps.kvissnet.gaebackend.model.Category;
 import com.mreapps.kvissnet.gaebackend.model.enums.LanguageCode;
@@ -86,7 +85,7 @@ public class EditCategoryPresenter implements Presenter
         {
             public void onClick(ClickEvent event)
             {
-                eventBus.fireEvent(new EditCategoryCancelledEvent());
+                eventBus.fireEvent(new CategoryEvent.EditCancelledEvent());
             }
         });
     }
@@ -106,12 +105,12 @@ public class EditCategoryPresenter implements Presenter
         {
             public void onSuccess(Category result)
             {
-                eventBus.fireEvent(new CategoryUpdatedEvent(result));
+                eventBus.fireEvent(new CategoryEvent.UpdatedEvent(result));
             }
 
             public void onFailure(Throwable caught)
             {
-                Window.alert("Error updating contact");
+                Window.alert("Error updating category");
             }
         });
     }

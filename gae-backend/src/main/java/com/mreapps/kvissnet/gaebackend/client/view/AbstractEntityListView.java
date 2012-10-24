@@ -1,91 +1,96 @@
 package com.mreapps.kvissnet.gaebackend.client.view;
 
-import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.view.client.ListDataProvider;
-import com.mreapps.kvissnet.gaebackend.server.entity.BaseEntity;
+import com.google.gwt.user.client.ui.*;
+import com.mreapps.kvissnet.gaebackend.client.i18n.TextConstants;
+import com.mreapps.kvissnet.gaebackend.client.presenter.EntityDisplay;
+import com.mreapps.kvissnet.gaebackend.client.ui.Table;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractEntityListView<T extends BaseEntity> extends Composite implements EntityDisplay
+public abstract class AbstractEntityListView<T> extends Composite implements EntityDisplay<T>
 {
     private Button addButton;
     private Button deleteButton;
     private Button editButton;
-    private CellTable<ListEntityWrapper> table;
-    private ListDataProvider<ListEntityWrapper> dataProvider;
+    private Table<T> table;
+
+    private final TextConstants text;
 
     protected AbstractEntityListView()
     {
-        FlexTable contentTable = new FlexTable();
+        text = GWT.create(TextConstants.class);
+
+        final FlexTable contentTable = new FlexTable();
         contentTable.setWidth("100%");
         contentTable.getCellFormatter().setWidth(0, 0, "100%");
         contentTable.getFlexCellFormatter().setVerticalAlignment(0, 0, DockPanel.ALIGN_TOP);
 
-        // TODO i18n
-        addButton = new Button("Add");
-        editButton = new Button("Edit");
-        deleteButton = new Button("Delete");
+        table = createTable();
 
-        table = new CellTable<ListEntityWrapper>();
-        Column column = new Column(new CheckboxCell())
-        {
-            @Override
-            public Object getValue(Object object)
-            {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-        };
+        contentTable.setWidget(0, 0, table.asWidget());
+        contentTable.setWidget(1, 0, createActionButtonPanel());
 
+        initWidget(contentTable);
+    }
 
-//        table.addColumn();
+    protected abstract Table<T> createTable();
 
+    private Widget createActionButtonPanel()
+    {
+        HorizontalPanel hPanel = new HorizontalPanel();
+        hPanel.setBorderWidth(0);
+        hPanel.setSpacing(0);
+        hPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
+        addButton = new Button(getText().add());
+        hPanel.add(addButton);
+        editButton = new Button(getText().edit());
+        hPanel.add(editButton);
+        deleteButton = new Button(getText().delete());
+        hPanel.add(deleteButton);
+
+        return hPanel;
+    }
+
+    protected final TextConstants getText()
+    {
+        return text;
     }
 
     @Override
-    public HasClickHandlers getAddButton()
+    public final HasClickHandlers getAddButton()
     {
         return addButton;
     }
 
     @Override
-    public HasClickHandlers getEditButton()
+    public final HasClickHandlers getEditButton()
     {
         return editButton;
     }
 
     @Override
-    public HasClickHandlers getDeleteButton()
+    public final HasClickHandlers getDeleteButton()
     {
         return deleteButton;
     }
 
-    public void setListData(List<T> listData)
+    @Override
+    public final Widget asWidget()
     {
-        List<ListEntityWrapper> list = new ArrayList<ListEntityWrapper>();
-        for (T t : listData)
-        {
-            list.add(new ListEntityWrapper(t));
-        }
-        dataProvider.setList(list);
+        return this;
     }
 
-    private class ListEntityWrapper
+    @Override
+    public final void setData(List<T> data)
     {
-        private boolean selected;
-        private final T entity;
-
-        private ListEntityWrapper(T entity)
-        {
-            this.entity = entity;
-        }
+        table.setData(data);
     }
 
+    @Override
+    public final List<T> getSelectedData()
+    {
+        return table.getSelectedData();
+    }
 }

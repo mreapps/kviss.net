@@ -1,7 +1,5 @@
 package com.mreapps.kvissnet.gaebackend.server.service.impl;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.mreapps.kvissnet.gaebackend.client.CategoryService;
 import com.mreapps.kvissnet.gaebackend.model.Category;
@@ -11,6 +9,7 @@ import com.mreapps.kvissnet.gaebackend.server.dao.CategoryDao;
 import com.mreapps.kvissnet.gaebackend.server.dao.impl.CategoryDaoImpl;
 import com.mreapps.kvissnet.gaebackend.server.entity.JdoCategory;
 import com.mreapps.kvissnet.gaebackend.server.entity.JdoSubCategory;
+import com.mreapps.kvissnet.gaebackend.server.factory.KeyFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,39 +36,19 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements Categor
     @Override
     public void delete(Long id)
     {
-        categoryDao.delete(createKey(JdoCategory.class, id));
+        categoryDao.delete(KeyFactory.createKey(JdoCategory.class, id));
     }
 
     @Override
     public Category get(Long id)
     {
-        return convert(categoryDao.get(createKey(JdoCategory.class, id)));
+        return convert(categoryDao.get(KeyFactory.createKey(JdoCategory.class, id)));
     }
 
     @Override
     public List<Category> delete(List<Long> ids)
     {
-        return convert(categoryDao.delete(createKeys(JdoCategory.class, ids)));
-    }
-
-    private List<Key> createKeys(Class clazz, Collection<Long> ids)
-    {
-        if (ids == null)
-        {
-            return null;
-        }
-
-        List<Key> keys = new ArrayList<Key>();
-        for (Long id : ids)
-        {
-            keys.add(createKey(clazz, id));
-        }
-        return keys;
-    }
-
-    private Key createKey(Class clazz, long id)
-    {
-        return KeyFactory.createKey(clazz.getSimpleName().toUpperCase(), id);
+        return convert(categoryDao.delete(KeyFactory.createKeys(JdoCategory.class, ids)));
     }
 
     private List<Category> convert(Collection<JdoCategory> jdoCategories)
@@ -106,7 +85,7 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements Categor
         JdoCategory jdoCategory = new JdoCategory();
         if (category.getId() != null)
         {
-            jdoCategory.setKey(createKey(JdoCategory.class, category.getId()));
+            jdoCategory.setKey(KeyFactory.createKey(JdoCategory.class, category.getId()));
         }
         for (LanguageCode languageCode : LanguageCode.values())
         {
@@ -125,7 +104,7 @@ public class CategoryServiceImpl extends RemoteServiceServlet implements Categor
         JdoSubCategory jdoSubCategory = new JdoSubCategory(jdoCategory);
         if (subCategory.getId() != null)
         {
-            jdoSubCategory.setKey(createKey(JdoSubCategory.class, subCategory.getId()));
+            jdoSubCategory.setKey(KeyFactory.createKey(JdoSubCategory.class, subCategory.getId()));
         }
         for (LanguageCode languageCode : LanguageCode.values())
         {
